@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'wall/css/style.css' %}">
+    <title>Wall</title>
+</head>
+<body>
+    <header>
+        <h1>Coding Dojo Wall</h1>
+        <p>Welcome {{user.first_name}}!</p>
+        <a href="/logout">Logout</a>
+    </header>
+
+    <main class="container">
+        <form method="POST" action="/wall/post" class="make_post">{% csrf_token %}
+            <h3>Post a Message</h3>
+            <input type="text" name="emily">
+            <input type="submit" class="btn btn-outline-primary">
+        </form>
+
+        {%for message in messages%}
+            <div class="post">
+                <div class="og">
+                    <h4>{{message.user_id.first_name}}</h4>
+                    <p>{{message.message}}</p>
+                </div>
+                <div class="comments">
+                    {% for comment in message.comments.all %}
+                        <h5>{{comment.user_id.first_name}}</h5>
+                        <p>{{comment.comment}}</p>
+                    {% endfor %}
+                </div>
+
+                <form method="POST" action="/wall/comment" class="make_comment">{% csrf_token %}
+                        <p>Post a Comment</p>
+                        <input type="text" name="reply">
+                        <input type="hidden" name="num" value="{{message.id}}">
+                        <input type="submit" class="btn btn-outline-success">
+                </form>
+            </div>
+        {%endfor%}
+
+    </main>
+</body>
+</html>
